@@ -27,6 +27,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.prowidesoftware</groupId>
+			<artifactId>pw-swift-core</artifactId>
+			<version>SRU2022-9.3.12</version>
+		</dependency>
 	</dependencies>
 
 	<build>
