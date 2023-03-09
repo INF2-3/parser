@@ -1,5 +1,6 @@
 package com.api.parser;
 
+import org.json.simple.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,11 +12,11 @@ public class ParserApplication {
 
 		//Test
 		Parser JSONparser = new JSONParser();
-		Parser XMLparser = new XMLParser();
+//		Parser XMLparser = new XMLParser();
 		String json = JSONparser.parseMT940();
-		String xml = XMLparser.parseMT940();
+//		String xml = XMLparser.parseMT940();
 		System.out.println(json);
-		System.out.println(xml);
+//		System.out.println(xml);
 	}
 
 }
