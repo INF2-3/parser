@@ -1,8 +1,9 @@
 package com.api.parser;
 
-import org.json.simple.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.Arrays;
 
 @SpringBootApplication
 public class ParserApplication {
@@ -11,11 +12,11 @@ public class ParserApplication {
 		SpringApplication.run(ParserApplication.class, args);
 
 		//Test
-		Parser JSONparser = new JSONParser();
+		JSONParser JSONparser = new JSONParser();
 //		Parser XMLparser = new XMLParser();
-		String json = JSONparser.parseMT940();
+//		String[] json = JSONparser.getTag86Parts();
 //		String xml = XMLparser.parseMT940();
-		System.out.println(json);
+		System.out.println(JSONparser.getTag86Parts());
 //		System.out.println(xml);
 	}
 
