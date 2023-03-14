@@ -16,7 +16,7 @@ public class ParserApplication {
 //		Parser XMLparser = new XMLParser();
 //		String[] json = JSONparser.getTag86Parts();
 //		String xml = XMLparser.parseMT940();
-		System.out.println(JSONparser.getTag86Parts());
+		System.out.println(JSONparser.parseMT940());
 //		System.out.println(xml);
 	}
 
