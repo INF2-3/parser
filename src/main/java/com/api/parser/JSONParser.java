@@ -1,5 +1,6 @@
 package com.api.parser;
 
+import com.prowidesoftware.swift.model.Tag;
 import com.prowidesoftware.swift.model.field.Field;
 import com.prowidesoftware.swift.model.field.Field61;
 import com.prowidesoftware.swift.model.field.Field65;
@@ -18,8 +19,23 @@ public class JSONParser extends Parser {
     public String parseMT940() {
         try {
             MT940 mt940 = getMT940File();
-
             JSONObject formattedJSON = new JSONObject();
+
+            int transcactionCount = 0;
+            JSONArray transactions = new JSONArray();
+            for (Field field : mt940.getFields()) {
+                System.out.println(field.toJson());
+                if (field.getName().equals("61")) {
+                    JSONObject obj = new JSONObject(field.toJson());
+                    JSONObject correspondingTag86 = splitTag86IntoParts(mt940.getField86().get(transcactionCount).getNarrative());
+
+                    obj.put("tag86", correspondingTag86);
+                    transactions.put(obj);
+                    transcactionCount++;
+                }
+            }
+            formattedJSON.put("transactions", transactions);
+
             String tag20 = mt940.getField20().getReference();
             String tag25 = mt940.getField25().getAccount();
             String tag28C = mt940.getField28C().getStatementNumber();
@@ -30,28 +46,28 @@ public class JSONParser extends Parser {
             tag60F.put("currency", mt940.getField60F().getCurrency());
             tag60F.put("amount", mt940.getField60F().getAmount());
 
-            JSONArray tag61 = new JSONArray();
-            for(Field61 field : mt940.getField61()) {
-                JSONObject obj = new JSONObject();
-                obj.put("valueDate", field.getValueDate());
-                obj.put("entryDate", field.getEntryDate());
-                obj.put("debitCreditMark", field.getDebitCreditMark());
-                obj.put("amount", field.getAmount());
-                obj.put("transactionType", field.getTransactionType());
-                obj.put("identificationCode", field.getIdentificationCode());
-                obj.put("referenceForTheAccountOwner", field.getReferenceForTheAccountOwner());
-                obj.put("referenceOfTheAccountServicingInstitution", field.getReferenceOfTheAccountServicingInstitution());
-                obj.put("supplementaryDetails", field.getSupplementaryDetails());
-                tag61.put(obj);
-            }
-
-            JSONArray tag86 = new JSONArray();
-            for (Field86 field : mt940.getField86()) {
-                JSONObject obj = new JSONObject();
-                obj.put("accountOwnerInformationInline", field.getNarrative());
-                obj.put("accountOwnerInformationSplit", splitTag86IntoParts(field.getNarrative()));
-                tag86.put(obj);
-            }
+//            JSONArray tag61 = new JSONArray();
+//            for(Field61 field : mt940.getField61()) {
+//                JSONObject obj = new JSONObject();
+//                obj.put("valueDate", field.getValueDate());
+//                obj.put("entryDate", field.getEntryDate());
+//                obj.put("debitCreditMark", field.getDebitCreditMark());
+//                obj.put("amount", field.getAmount());
+//                obj.put("transactionType", field.getTransactionType());
+//                obj.put("identificationCode", field.getIdentificationCode());
+//                obj.put("referenceForTheAccountOwner", field.getReferenceForTheAccountOwner());
+//                obj.put("referenceOfTheAccountServicingInstitution", field.getReferenceOfTheAccountServicingInstitution());
+//                obj.put("supplementaryDetails", field.getSupplementaryDetails());
+//                tag61.put(obj);
+//            }
+//
+//            JSONArray tag86 = new JSONArray();
+//            for (Field86 field : mt940.getField86()) {
+//                JSONObject obj = new JSONObject();
+//                obj.put("accountOwnerInformationInline", field.getNarrative());
+//                obj.put("accountOwnerInformationSplit", splitTag86IntoParts(field.getNarrative()));
+//                tag86.put(obj);
+//            }
 
             JSONObject tag62F = new JSONObject();
             tag62F.put("dCMark", mt940.getField62F().getDCMark());
@@ -80,8 +96,8 @@ public class JSONParser extends Parser {
             tags.put("25", tag25);
             tags.put("28C", tag28C);
             tags.put("60F", tag60F);
-            tags.put("61", tag61);
-            tags.put("86", tag86);
+//            tags.put("61", tag61);
+//            tags.put("86", tag86);
             tags.put("62", tag62F);
             tags.put("64", tag64);
             tags.put("65", tag65);
