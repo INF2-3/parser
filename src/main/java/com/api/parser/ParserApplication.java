@@ -10,14 +10,6 @@ public class ParserApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ParserApplication.class, args);
-
-		//Test
-		JSONParser JSONparser = new JSONParser();
-//		Parser XMLparser = new XMLParser();
-//		String[] json = JSONparser.getTag86Parts();
-//		String xml = XMLparser.parseMT940();
-		System.out.println(JSONparser.parseMT940());
-//		System.out.println(xml);
 	}
 
 }

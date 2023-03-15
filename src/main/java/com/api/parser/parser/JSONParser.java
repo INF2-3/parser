@@ -1,13 +1,11 @@
-package com.api.parser;
+package com.api.parser.parser;
 
-import com.prowidesoftware.swift.model.Tag;
 import com.prowidesoftware.swift.model.field.Field;
-import com.prowidesoftware.swift.model.field.Field61;
 import com.prowidesoftware.swift.model.field.Field65;
-import com.prowidesoftware.swift.model.field.Field86;
 import com.prowidesoftware.swift.model.mt.mt9xx.MT940;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
@@ -16,29 +14,30 @@ import java.util.regex.Pattern;
 
 public class JSONParser extends Parser {
     @Override
-    public String parseMT940() {
+    public String parseMT940(MultipartFile file) {
+        MT940 mt940 = null;
         try {
-            MT940 mt940 = getMT940File();
-            JSONObject formattedJSON = new JSONObject();
-            formattedJSON.put("type", mt940.getMessageType());
-
-            JSONObject tags = new JSONObject();
-            tags.put("header", getHeaderInfo(mt940));
-            tags.put("transactionReferenceNumber", getTag20(mt940));
-            tags.put("accountIdentification", getTag25(mt940));
-            tags.put("statementNumber", getTag28C(mt940));
-            tags.put("openingBalance", getTag60F(mt940));
-            tags.put("closingBalance", getTag62F(mt940));
-            tags.put("closingAvailableBalance", getTag64(mt940));
-            tags.put("forwardAvailableBalance", getTag65(mt940));
-            tags.put("transactions", getTransactions(mt940));
-            formattedJSON.put("tags", tags);
-
-            return formattedJSON.toString();
+            mt940 = MT940.parse(file.getInputStream());
         } catch (IOException e) {
-            System.out.println("There was a problem with getting the file");
-            return null;
+            throw new RuntimeException(e);
         }
+        ;
+        JSONObject formattedJSON = new JSONObject();
+        formattedJSON.put("type", mt940.getMessageType());
+
+        JSONObject tags = new JSONObject();
+        tags.put("header", getHeaderInfo(mt940));
+        tags.put("transactionReferenceNumber", getTag20(mt940));
+        tags.put("accountIdentification", getTag25(mt940));
+        tags.put("statementNumber", getTag28C(mt940));
+        tags.put("openingBalance", getTag60F(mt940));
+        tags.put("closingBalance", getTag62F(mt940));
+        tags.put("closingAvailableBalance", getTag64(mt940));
+        tags.put("forwardAvailableBalance", getTag65(mt940));
+        tags.put("transactions", getTransactions(mt940));
+        formattedJSON.put("tags", tags);
+
+        return formattedJSON.toString();
     }
 
     public JSONObject splitTag86IntoParts(String tag86ContentInline) {
