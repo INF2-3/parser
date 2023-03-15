@@ -21,7 +21,7 @@ public class JSONParser extends Parser {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ;
+
         JSONObject formattedJSON = new JSONObject();
         formattedJSON.put("type", mt940.getMessageType());
 

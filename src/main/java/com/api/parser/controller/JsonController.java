@@ -18,7 +18,7 @@ public class JsonController {
     }
 
     @PostMapping("/MT940toJSON")
-    public String MT940toJSON(@RequestParam("file") MultipartFile file) throws Exception {
+    public String MT940toJSON(@RequestParam("file") MultipartFile file){
         return jsonParser.parseMT940(file);
     }
 }
