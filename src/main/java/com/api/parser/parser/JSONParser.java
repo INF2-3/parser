@@ -37,48 +37,7 @@ public class JSONParser extends Parser {
         tags.put("transactions", getTransactions(mt940));
         formattedJSON.put("tags", tags);
 
-        return formattedJSON.toString();
-    }
-
-    public JSONObject splitTag86IntoParts(String tag86ContentInline) {
-        HashMap<String, String> codeWords = new HashMap<>() {{
-            put("RTRN", "returnReason");
-            put("CREF", "clientReference");
-            put("EREF", "endToEndReference");
-            put("PREF", "paymentInformationId");
-            put("IREF", "instructionId");
-            put("MARF", "mandateReference");
-            put("CSID", "creditorId");
-            put("CNTP", "counterPartyId");
-            put("REMI", "remittanceInformation");
-            put("PURP", "purposeCode");
-            put("ULTC", "ultimateCreditor");
-            put("ULTD", "ultimateDebitor");
-            put("EXCH", "exchangeRate");
-            put("CHGS", "charges");
-        }};
-
-        JSONObject obj = new JSONObject();
-        obj.put("accountOwnerInformationInOneLine", tag86ContentInline);
-
-        for (Map.Entry<String, String> entry : codeWords.entrySet()) {
-            Pattern pattern = Pattern.compile( entry.getKey() + "/(?<=/).+?(?=//)");
-
-            if (entry.getKey().equals("REMI")) {
-                pattern = Pattern.compile("REMI/.*/");
-            }
-            Matcher matcher = pattern.matcher(tag86ContentInline);
-
-            if (matcher.find()) {
-                String[] match = matcher.group().split("/");
-                String[] cleanedResult = Arrays.copyOfRange(match, 1, match.length);
-                String result = String.join("/", cleanedResult);
-                obj.put(entry.getValue(), result);
-            } else {
-                obj.put(entry.getValue(), "");
-            }
-        }
-        return obj;
+        return formattedJSON.toString(1);
     }
 
     public JSONArray getTransactions(MT940 mt940) {
@@ -87,7 +46,7 @@ public class JSONParser extends Parser {
         for (Field field : mt940.getFields()) {
             if (field.getName().equals("61")) {
                 JSONObject obj = new JSONObject(field.toJson());
-                JSONObject correspondingTag86 = splitTag86IntoParts(mt940.getField86().get(transactionCount).getNarrative());
+                JSONObject correspondingTag86 = getTag86(mt940.getField86().get(transactionCount).getNarrative());
                 obj.put("informationToAccountOwner", correspondingTag86);
                 transactions.put(obj);
                 transactionCount++;
@@ -181,5 +140,10 @@ public class JSONParser extends Parser {
         header.put("messageType", mt940.getMessageType());
         header.put("mtId", mt940.getMtId());
         return header;
+    }
+
+    public JSONObject getTag86(String inp) {
+        HashMap<String, String> data = splitTag86IntoParts(inp);
+        return new JSONObject(data);
     }
 }
