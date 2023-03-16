@@ -1,8 +1,14 @@
 package com.api.parser.parser;
 
+import com.prowidesoftware.swift.model.field.Field;
+import com.prowidesoftware.swift.model.field.Field61;
+import com.prowidesoftware.swift.model.field.Field65;
+import com.prowidesoftware.swift.model.mt.mt9xx.MT940;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +39,7 @@ public abstract class Parser {
         tag86split.put("accountOwnerInformationInOneLine", tag86ContentInline);
 
         for (Map.Entry<String, String> entry : codeWords.entrySet()) {
-            Pattern pattern = Pattern.compile( entry.getKey() + "/(?<=/).+?(?=//)");
+            Pattern pattern = Pattern.compile(entry.getKey() + "/(?<=/).+?(?=//)");
 
             if (entry.getKey().equals("REMI")) {
                 pattern = Pattern.compile("REMI/.*/");
@@ -50,5 +56,107 @@ public abstract class Parser {
             }
         }
         return tag86split;
+    }
+
+    public HashMap<Field61, HashMap<String, String>> getTransactionsAsMap(MT940 mt940) {
+        int transactionCount = 0;
+        HashMap<Field61, HashMap<String, String>> transactions = new HashMap<>();
+        for (Field field : mt940.getFields()) {
+            if (field.getName().equals("61")) {
+                Field61 field61 = (Field61) field;
+                HashMap<String, String> correspondingTag86 = splitTag86IntoParts(mt940.getField86().get(transactionCount).getNarrative());
+                transactions.put(field61, correspondingTag86);
+                transactionCount++;
+            }
+        }
+        return transactions;
+    }
+
+    public HashMap<String, String> getTag20AsMap(MT940 mt940) {
+        return new HashMap<>() {{
+            put("tag", mt940.getField20().getName());
+            put("referenceNumber", mt940.getField20().getReference());
+            put("description", "This tag specifies the reference assigned by the Sender to unambiguously identify\n" +
+                    "the message.");
+        }};
+    }
+
+    public HashMap<String, String> getTag25AsMap(MT940 mt940) {
+        return new HashMap<>() {{
+            put("tag", mt940.getField25().getName());
+            put("accountNumber", mt940.getField25().getAccount());
+            put("description", "This tag identifies the account for which the statement is sent");
+        }};
+    }
+
+    public HashMap<String, String> getTag28CAsMap(MT940 mt940) {
+        return new HashMap<>() {{
+            put("tag", mt940.getField28C().getName());
+            put("statementNumber", mt940.getField28C().getStatementNumber());
+            put("description", "This tag contains the sequential number of the statement");
+        }};
+    }
+
+    public HashMap<String, String> getTag60FAsMap(MT940 mt940) {
+        return new HashMap<>() {{
+            put("tag", mt940.getField60F().getName());
+            put("dCMark", mt940.getField60F().getDCMark());
+            put("date", mt940.getField60F().getDate());
+            put("currency", mt940.getField60F().getCurrency());
+            put("amount", mt940.getField60F().getAmount());
+            put("description", "This tag specifies, for the opening balance, whether it is a debit or credit balance,\n" +
+                    "the date, the currency and the amount of the balance.");
+        }};
+    }
+
+    public HashMap<String, String> getTag62FAsMap(MT940 mt940) {
+        return new HashMap<>() {{
+            put("tag", mt940.getField62F().getName());
+            put("dCMark", mt940.getField62F().getDCMark());
+            put("date", mt940.getField62F().getDate());
+            put("currency", mt940.getField62F().getCurrency());
+            put("amount", mt940.getField62F().getAmount());
+            put("description", "This tag specifies for the closing balance, whether it is a debit or credit balance, the\n" +
+                    "date, the currency and the amount of the balance.");
+        }};
+    }
+
+    public HashMap<String, String> getTag64AsMap(MT940 mt940) {
+        return new HashMap<>() {{
+            put("tag", mt940.getField64().getName());
+            put("dCMark", mt940.getField64().getDCMark());
+            put("date", mt940.getField64().getDate());
+            put("currency", mt940.getField64().getCurrency());
+            put("amount", mt940.getField64().getAmount());
+            put("description", "This tag specifies for the closing available balance, whether it is a debit or credit\n" +
+                    "balance, the date, the currency and the amount of the balance");
+        }};
+    }
+
+    public ArrayList<HashMap<String, String>> getTag65AsArrayList(MT940 mt940) {
+        ArrayList<HashMap<String, String>> tag65 = new ArrayList<>();
+        for (Field65 field : mt940.getField65()) {
+            HashMap<String, String> map = new HashMap<>() {{
+                put("dCMark", field.getDCMark());
+                put("date", field.getDate());
+                put("currency", field.getCurrency());
+                put("amount", field.getAmount());
+            }};
+            tag65.add(map);
+        }
+        return tag65;
+    }
+
+    public HashMap<String, String> getHeaderInfoAsMap(MT940 mt940) {
+        return new HashMap<>() {{
+            put("applicationId", mt940.getApplicationId());
+            put("serviceId", mt940.getServiceId());
+            put("logicalTerminal", mt940.getLogicalTerminal());
+            put("sessionNumber", mt940.getSessionNumber());
+            put("sequenceNumber", mt940.getSequenceNumber());
+            put("receiverAddress", mt940.getReceiver());
+            put("messageType", mt940.getMessageType());
+            put("mtId", mt940.getMtId().toString());
+        }};
     }
 }
