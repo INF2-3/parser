@@ -18,6 +18,11 @@ import java.util.regex.Pattern;
 public abstract class Parser {
     public abstract String parseMT940(MultipartFile file);
 
+    /**
+     * This method gets every sub value from the 86 tag by using regex and the pattern and matcher classes
+     * @param tag86ContentInline The full content of the 86 tag in one line
+     * @return Hashmap with every sub value as the value and the name as the key
+     */
     public HashMap<String, String> splitTag86IntoParts(String tag86ContentInline) {
         HashMap<String, String> codeWords = new HashMap<>() {{
             put("RTRN", "returnReason");
@@ -58,6 +63,12 @@ public abstract class Parser {
         return tag86split;
     }
 
+    /**
+     * This method gets every Field61 and the corresponding 86 Field and returns them in a hashmap
+     * @param mt940 MT940 file
+     * @return Hashmap with a Field61 obj as key and a hashmap that contains every tag 86 sub value that corresponds
+     * to the specific Field61
+     */
     public HashMap<Field61, HashMap<String, String>> getTransactionsAsMap(MT940 mt940) {
         int transactionCount = 0;
         HashMap<Field61, HashMap<String, String>> transactions = new HashMap<>();
@@ -74,7 +85,7 @@ public abstract class Parser {
 
     public HashMap<String, String> getTag20AsMap(MT940 mt940) {
         return new HashMap<>() {{
-            put("tag", mt940.getField20().getName());
+            put("name", mt940.getField20().getName());
             put("referenceNumber", mt940.getField20().getReference());
             put("description", "This tag specifies the reference assigned by the Sender to unambiguously identify\n" +
                     "the message.");
@@ -83,7 +94,7 @@ public abstract class Parser {
 
     public HashMap<String, String> getTag25AsMap(MT940 mt940) {
         return new HashMap<>() {{
-            put("tag", mt940.getField25().getName());
+            put("name", mt940.getField25().getName());
             put("accountNumber", mt940.getField25().getAccount());
             put("description", "This tag identifies the account for which the statement is sent");
         }};
@@ -91,7 +102,7 @@ public abstract class Parser {
 
     public HashMap<String, String> getTag28CAsMap(MT940 mt940) {
         return new HashMap<>() {{
-            put("tag", mt940.getField28C().getName());
+            put("name", mt940.getField28C().getName());
             put("statementNumber", mt940.getField28C().getStatementNumber());
             put("description", "This tag contains the sequential number of the statement");
         }};
@@ -111,7 +122,7 @@ public abstract class Parser {
 
     public HashMap<String, String> getTag62FAsMap(MT940 mt940) {
         return new HashMap<>() {{
-            put("tag", mt940.getField62F().getName());
+            put("name", mt940.getField62F().getName());
             put("dCMark", mt940.getField62F().getDCMark());
             put("date", mt940.getField62F().getDate());
             put("currency", mt940.getField62F().getCurrency());
@@ -123,7 +134,7 @@ public abstract class Parser {
 
     public HashMap<String, String> getTag64AsMap(MT940 mt940) {
         return new HashMap<>() {{
-            put("tag", mt940.getField64().getName());
+            put("name", mt940.getField64().getName());
             put("dCMark", mt940.getField64().getDCMark());
             put("date", mt940.getField64().getDate());
             put("currency", mt940.getField64().getCurrency());
