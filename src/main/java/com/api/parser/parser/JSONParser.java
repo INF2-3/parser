@@ -1,26 +1,20 @@
 package com.api.parser.parser;
 
-import com.prowidesoftware.swift.model.field.Field;
 import com.prowidesoftware.swift.model.field.Field61;
-import com.prowidesoftware.swift.model.field.Field65;
 import com.prowidesoftware.swift.model.mt.mt9xx.MT940;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class JSONParser extends Parser {
+    @SuppressWarnings("unchecked")
     @Override
-    public String parseMT940(MultipartFile file) {
-        MT940 mt940 = null;
-        try {
-            mt940 = MT940.parse(file.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public JSONObject parseToFormat(MultipartFile file) {
+        MT940 mt940 = parseMT940(file);
+        if (mt940 == null) {
+            return null;
         }
 
         JSONObject formattedJSON = new JSONObject();
@@ -38,7 +32,7 @@ public class JSONParser extends Parser {
         tags.put("transactions", getTransactions(mt940));
 
         formattedJSON.put("tags", tags);
-        return formattedJSON.toString(1);
+        return formattedJSON;
     }
 
     public JSONArray getTransactions(MT940 mt940) {

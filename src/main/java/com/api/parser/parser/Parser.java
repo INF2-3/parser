@@ -4,10 +4,9 @@ import com.prowidesoftware.swift.model.field.Field;
 import com.prowidesoftware.swift.model.field.Field61;
 import com.prowidesoftware.swift.model.field.Field65;
 import com.prowidesoftware.swift.model.mt.mt9xx.MT940;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,7 +15,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class Parser {
-    public abstract String parseMT940(MultipartFile file);
+    public abstract <T> T parseToFormat(MultipartFile file);
+
+    public MT940 parseMT940(MultipartFile file) {
+        try {
+            return MT940.parse(file.getInputStream());
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
     /**
      * This method gets every sub value from the 86 tag by using regex and the pattern and matcher classes
