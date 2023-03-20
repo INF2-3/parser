@@ -36,10 +36,10 @@ public class JSONParser extends Parser {
     }
 
     public JSONArray getTransactions(MT940 mt940) {
-        HashMap<Field61, HashMap<String, String>> transactionsMap = getTransactionsAsMap(mt940);
+        LinkedHashMap<Field61, LinkedHashMap<String, String>> transactionsMap = getTransactionsAsMap(mt940);
         JSONArray transactions = new JSONArray();
 
-        for (Map.Entry<Field61, HashMap<String, String>> entry : transactionsMap.entrySet()) {
+        for (Map.Entry<Field61, LinkedHashMap<String, String>> entry : transactionsMap.entrySet()) {
             JSONObject obj61 = new JSONObject(entry.getKey().toJson());
             JSONObject obj86 = new JSONObject(entry.getValue());
             obj61.put("informationToAccountOwner", obj86);

@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class XMLParser extends Parser {
@@ -189,7 +190,7 @@ public class XMLParser extends Parser {
 
     public Element getTransactionsAsXML(MT940 mt940) {
         Element transactions = this.document.createElement("transactions");
-        for (Map.Entry<Field61, HashMap<String, String>> entry : getTransactionsAsMap(mt940).entrySet()) {
+        for (Map.Entry<Field61, LinkedHashMap<String, String>> entry : getTransactionsAsMap(mt940).entrySet()) {
             Element transaction = this.document.createElement("transaction");
 
             transaction.appendChild(createElementWithText("name", entry.getKey().getName()));
@@ -205,7 +206,7 @@ public class XMLParser extends Parser {
 
             Element tag86 = this.document.createElement("informationToAccountOwner");
             for (Map.Entry<String, String> tag86entry : entry.getValue().entrySet()) {
-                tag86.appendChild(this.document.createElement(tag86entry.getKey())).appendChild(this.document.createTextNode(tag86entry.getValue()));
+                tag86.appendChild(createElementWithText(tag86entry.getKey(), tag86entry.getValue()));
             }
             transaction.appendChild(tag86);
             transactions.appendChild(transaction);
