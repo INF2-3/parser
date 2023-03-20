@@ -19,9 +19,8 @@ public class JSONParser extends Parser {
 
         JSONObject formattedJSON = new JSONObject();
         JSONObject tags = new JSONObject();
-        formattedJSON.put("type", mt940.getMessageType());
+        formattedJSON.put("header", new JSONObject(getHeaderInfoAsMap(mt940)));
 
-        tags.put("header", new JSONObject(getHeaderInfoAsMap(mt940)));
         tags.put("transactionReferenceNumber", new JSONObject(getTag20AsMap(mt940)));
         tags.put("accountIdentification", new JSONObject(getTag25AsMap(mt940)));
         tags.put("statementNumber", new JSONObject(getTag28CAsMap(mt940)));
