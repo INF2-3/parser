@@ -1,6 +1,6 @@
 package com.api.parser.controller;
 
-import com.api.parser.parser.JSONParser;
+import com.api.parser.parser.XMLParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -8,17 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-public class JsonController {
-
-    private JSONParser jsonParser;
+public class XMLController {
+    private final XMLParser xmlParser;
 
     @Autowired
-    public JsonController(){
-        this.jsonParser = new JSONParser();
+    public XMLController() {
+        this.xmlParser = new XMLParser();
     }
 
-    @PostMapping("/MT940toJSON")
-    public String MT940toJSON(@RequestParam("file") MultipartFile file){
-        return jsonParser.parseMT940(file);
+    @PostMapping("/MT940toXML")
+    public String MT940toXML(@RequestParam("file") MultipartFile file) {
+        return xmlParser.parseToFormat(file);
     }
 }
