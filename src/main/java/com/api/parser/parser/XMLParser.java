@@ -170,21 +170,19 @@ public class XMLParser extends Parser {
 
     public Element getTag65AsXML(MT940 mt940) {
         Element tag65 = this.document.createElement("forwardAvailableBalances");
-        for (HashMap<String, String> map : getTag65AsArrayList(mt940)) {
+        for (LinkedHashMap<String, String> map : getTag65AsArrayList(mt940)) {
             Element forwardAvailableBalance = this.document.createElement("forwardAvailableBalance");
             for (Map.Entry<String, String> entry : map.entrySet()) {
-                Element element = this.document.createElement(entry.getKey());
-                element.appendChild(this.document.createTextNode(entry.getValue()));
-                forwardAvailableBalance.appendChild(element);
+                forwardAvailableBalance.appendChild(createElementWithText(entry.getKey(), entry.getValue()));
             }
             tag65.appendChild(forwardAvailableBalance);
         }
         return tag65;
     }
 
-    public Element createElementWithText(String elementName, String elementvalue) {
+    public Element createElementWithText(String elementName, String elementValue) {
         Element element = this.document.createElement(elementName);
-        element.appendChild(this.document.createTextNode(elementvalue));
+        element.appendChild(this.document.createTextNode(elementValue));
         return element;
     }
 
