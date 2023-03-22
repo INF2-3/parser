@@ -16,7 +16,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -84,11 +83,9 @@ public class XMLParser extends Parser {
 
     public Element getHeaderInfoAsXML(MT940 mt940) {
         Element header = this.document.createElement("header");
-        HashMap<String, String> headerInfoAsMap = getHeaderInfoAsMap(mt940);
+        LinkedHashMap<String, String> headerInfoAsMap = getHeaderInfoAsMap(mt940);
         for (Map.Entry<String, String> entry : headerInfoAsMap.entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            header.appendChild(element);
+            header.appendChild(createElementWithText(entry.getKey(), entry.getValue()));
         }
         return header;
     }

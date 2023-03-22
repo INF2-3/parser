@@ -167,7 +167,7 @@ public abstract class Parser {
         return tag65;
     }
 
-    public HashMap<String, String> getHeaderInfoAsMap(MT940 mt940) {
+    public LinkedHashMap<String, String> getHeaderInfoAsMap(MT940 mt940) {
         return new LinkedHashMap<>() {{
             put("applicationId", mt940.getApplicationId());
             put("serviceId", mt940.getServiceId());
