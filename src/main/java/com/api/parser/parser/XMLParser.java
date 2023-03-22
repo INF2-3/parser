@@ -16,7 +16,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -84,11 +83,9 @@ public class XMLParser extends Parser {
 
     public Element getHeaderInfoAsXML(MT940 mt940) {
         Element header = this.document.createElement("header");
-        HashMap<String, String> headerInfoAsMap = getHeaderInfoAsMap(mt940);
+        LinkedHashMap<String, String> headerInfoAsMap = getHeaderInfoAsMap(mt940);
         for (Map.Entry<String, String> entry : headerInfoAsMap.entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            header.appendChild(element);
+            header.appendChild(createElementWithText(entry.getKey(), entry.getValue()));
         }
         return header;
     }
@@ -170,21 +167,19 @@ public class XMLParser extends Parser {
 
     public Element getTag65AsXML(MT940 mt940) {
         Element tag65 = this.document.createElement("forwardAvailableBalances");
-        for (HashMap<String, String> map : getTag65AsArrayList(mt940)) {
+        for (LinkedHashMap<String, String> map : getTag65AsArrayList(mt940)) {
             Element forwardAvailableBalance = this.document.createElement("forwardAvailableBalance");
             for (Map.Entry<String, String> entry : map.entrySet()) {
-                Element element = this.document.createElement(entry.getKey());
-                element.appendChild(this.document.createTextNode(entry.getValue()));
-                forwardAvailableBalance.appendChild(element);
+                forwardAvailableBalance.appendChild(createElementWithText(entry.getKey(), entry.getValue()));
             }
             tag65.appendChild(forwardAvailableBalance);
         }
         return tag65;
     }
 
-    public Element createElementWithText(String elementName, String elementvalue) {
+    public Element createElementWithText(String elementName, String elementValue) {
         Element element = this.document.createElement(elementName);
-        element.appendChild(this.document.createTextNode(elementvalue));
+        element.appendChild(this.document.createTextNode(elementValue));
         return element;
     }
 

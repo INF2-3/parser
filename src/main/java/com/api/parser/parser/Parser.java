@@ -119,7 +119,7 @@ public abstract class Parser {
 
     public LinkedHashMap<String, String> getTag60FAsMap(MT940 mt940) {
         return new LinkedHashMap<>() {{
-            put("tag", mt940.getField60F().getName());
+            put("name", mt940.getField60F().getName());
             put("dCMark", mt940.getField60F().getDCMark());
             put("date", mt940.getField60F().getDate());
             put("currency", mt940.getField60F().getCurrency());
@@ -167,7 +167,7 @@ public abstract class Parser {
         return tag65;
     }
 
-    public HashMap<String, String> getHeaderInfoAsMap(MT940 mt940) {
+    public LinkedHashMap<String, String> getHeaderInfoAsMap(MT940 mt940) {
         return new LinkedHashMap<>() {{
             put("applicationId", mt940.getApplicationId());
             put("serviceId", mt940.getServiceId());
