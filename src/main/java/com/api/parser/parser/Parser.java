@@ -3,6 +3,7 @@ package com.api.parser.parser;
 import com.prowidesoftware.swift.model.field.Field;
 import com.prowidesoftware.swift.model.field.Field61;
 import com.prowidesoftware.swift.model.field.Field65;
+import com.prowidesoftware.swift.model.field.Field86;
 import com.prowidesoftware.swift.model.mt.mt9xx.MT940;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -177,6 +178,20 @@ public abstract class Parser {
             put("receiverAddress", mt940.getReceiver());
             put("messageType", mt940.getMessageType());
             put("mtId", mt940.getMtId().toString());
+        }};
+    }
+
+    public LinkedHashMap<String, String> getGeneral86TagAsMap(MT940 mt940) {
+        Field86 field86 = mt940.getField86().get(mt940.getField86().size() - 1);
+        if (!field86.getNarrative().contains("SUM")) {
+            return new LinkedHashMap<>();
+        }
+        String[] splitGeneral86Tag = field86.getNarrative().split("/");
+        return new LinkedHashMap<>() {{
+            put("numberOfDebitEntries", splitGeneral86Tag[2]);
+            put("numberOfCreditEntries", splitGeneral86Tag[3]);
+            put("debitEntriesTotalAmount", splitGeneral86Tag[4]);
+            put("creditEntriesTotalAmount", splitGeneral86Tag[5]);
         }};
     }
 }

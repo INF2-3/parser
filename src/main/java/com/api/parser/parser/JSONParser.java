@@ -29,6 +29,7 @@ public class JSONParser extends Parser {
         tags.put("closingAvailableBalance", new JSONObject(getTag64AsMap(mt940)));
         tags.put("forwardAvailableBalance", new JSONArray(getTag65AsArrayList(mt940)));
         tags.put("transactions", getTransactions(mt940));
+        tags.put("generalInformationToAccountOwner", new JSONObject(getGeneral86TagAsMap(mt940)));
 
         formattedJSON.put("tags", tags);
         return formattedJSON;
