@@ -82,97 +82,29 @@ public class XMLParser extends Parser {
     }
 
     public Element getHeaderInfoAsXML(MT940 mt940) {
-        Element header = this.document.createElement("header");
-        LinkedHashMap<String, String> headerInfoAsMap = getHeaderInfoAsMap(mt940);
-        for (Map.Entry<String, String> entry : headerInfoAsMap.entrySet()) {
-            header.appendChild(createElementWithText(entry.getKey(), entry.getValue()));
-        }
-        return header;
+        return createElementWithTextFromMap("header", getHeaderInfoAsMap(mt940));
     }
 
     public Element getTagsAsXML(MT940 mt940) {
         Element tags = this.document.createElement("tags");
 
-        tags.appendChild(getTag20(mt940));
-        tags.appendChild(getTag25AsXML(mt940));
-        tags.appendChild(getTag28CAsXML(mt940));
-        tags.appendChild(getTag60FAsXML(mt940));
-        tags.appendChild(getTag62FAsXML(mt940));
-        tags.appendChild(getTag64AsXML(mt940));
+        tags.appendChild(createElementWithTextFromMap("transactionReferenceNumber", getTag20AsMap(mt940)));
+        tags.appendChild(createElementWithTextFromMap("accountIdentification", getTag25AsMap(mt940)));
+        tags.appendChild(createElementWithTextFromMap("statementNumber", getTag28CAsMap(mt940)));
+        tags.appendChild(createElementWithTextFromMap("openingBalance", getTag60FAsMap(mt940)));
+        tags.appendChild(createElementWithTextFromMap("closingBalance", getTag62FAsMap(mt940)));
+        tags.appendChild(createElementWithTextFromMap("closingAvailableBalance", getTag64AsMap(mt940)));
         tags.appendChild(getTag65AsXML(mt940));
         tags.appendChild(getTransactionsAsXML(mt940));
+        tags.appendChild(createElementWithTextFromMap("generalInformationToAccountOwner", getGeneral86TagAsMap(mt940)));
 
         return tags;
-    }
-
-    public Element getTag20(MT940 mt940) {
-        Element tag20 = this.document.createElement("transactionReferenceNumber");
-        for (Map.Entry<String, String> entry : getTag20AsMap(mt940).entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            tag20.appendChild(element);
-        }
-        return tag20;
-    }
-
-    public Element getTag25AsXML(MT940 mt940) {
-        Element tag25 = this.document.createElement("accountIdentification");
-        for (Map.Entry<String, String> entry : getTag25AsMap(mt940).entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            tag25.appendChild(element);
-        }
-        return tag25;
-    }
-
-    public Element getTag28CAsXML(MT940 mt940) {
-        Element tag28C = this.document.createElement("statementNumber");
-        for (Map.Entry<String, String> entry : getTag28CAsMap(mt940).entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            tag28C.appendChild(element);
-        }
-        return tag28C;
-    }
-
-    public Element getTag60FAsXML(MT940 mt940) {
-        Element tag60F = this.document.createElement("openingBalance");
-        for (Map.Entry<String, String> entry : getTag60FAsMap(mt940).entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            tag60F.appendChild(element);
-        }
-        return tag60F;
-    }
-
-    public Element getTag62FAsXML(MT940 mt940) {
-        Element tag62F = this.document.createElement("closingBalance");
-        for (Map.Entry<String, String> entry : getTag62FAsMap(mt940).entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            tag62F.appendChild(element);
-        }
-        return tag62F;
-    }
-
-    public Element getTag64AsXML(MT940 mt940) {
-        Element tag64 = this.document.createElement("closingAvailableBalance");
-        for (Map.Entry<String, String> entry : getTag64AsMap(mt940).entrySet()) {
-            Element element = this.document.createElement(entry.getKey());
-            element.appendChild(this.document.createTextNode(entry.getValue()));
-            tag64.appendChild(element);
-        }
-        return tag64;
     }
 
     public Element getTag65AsXML(MT940 mt940) {
         Element tag65 = this.document.createElement("forwardAvailableBalances");
         for (LinkedHashMap<String, String> map : getTag65AsArrayList(mt940)) {
-            Element forwardAvailableBalance = this.document.createElement("forwardAvailableBalance");
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                forwardAvailableBalance.appendChild(createElementWithText(entry.getKey(), entry.getValue()));
-            }
-            tag65.appendChild(forwardAvailableBalance);
+            tag65.appendChild(createElementWithTextFromMap("forwardAvailableBalance", map));
         }
         return tag65;
     }
@@ -181,6 +113,20 @@ public class XMLParser extends Parser {
         Element element = this.document.createElement(elementName);
         element.appendChild(this.document.createTextNode(elementValue));
         return element;
+    }
+
+    /**
+     * Creates an xml element when given the tag name and a map with key value pairs for that tag
+     * @param tagName Name of the xml tag
+     * @param map Map containing all entries of a specific tag
+     * @return Element with all content stored as xml
+     */
+    public Element createElementWithTextFromMap(String tagName, Map<String, String> map) {
+        Element tag = this.document.createElement(tagName);
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            tag.appendChild(createElementWithText(entry.getKey(), entry.getValue()));
+        }
+        return tag;
     }
 
     public Element getTransactionsAsXML(MT940 mt940) {
@@ -199,11 +145,7 @@ public class XMLParser extends Parser {
             transaction.appendChild(createElementWithText("referenceForTheAccountOwner", entry.getKey().getReferenceForTheAccountOwner()));
             transaction.appendChild(createElementWithText("referenceOfTheAccountServicingInstitution", entry.getKey().getReferenceOfTheAccountServicingInstitution()));
 
-            Element tag86 = this.document.createElement("informationToAccountOwner");
-            for (Map.Entry<String, String> tag86entry : entry.getValue().entrySet()) {
-                tag86.appendChild(createElementWithText(tag86entry.getKey(), tag86entry.getValue()));
-            }
-            transaction.appendChild(tag86);
+            transaction.appendChild(createElementWithTextFromMap("informationToAccountOwner", entry.getValue()));
             transactions.appendChild(transaction);
         }
         return transactions;
