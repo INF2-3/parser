@@ -66,7 +66,7 @@ public class XMLParser extends Parser {
         StreamResult result = new StreamResult(outputStream);
         transformer.transform(source, result);
 
-        return outputStream.toString(StandardCharsets.UTF_8);
+        return outputStream.toString(StandardCharsets.UTF_8).replace("&#13;", "");
     }
 
     /**
