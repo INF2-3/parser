@@ -83,12 +83,16 @@ public abstract class Parser {
             if (field.getName().equals("61")) {
                 Field61 field61 = (Field61) field;
                 LinkedHashMap<String, String> correspondingTag86 = new LinkedHashMap<>();
-                if (mt940.getField86().size() - 1 >= transactionCount) {
-                    correspondingTag86 = splitTag86IntoParts(mt940.getField86().get(transactionCount).getNarrative());
+
+                // If the field after the 61 tag is an 86 tag, add the 86 field data to the 61 field
+                Field nextField = mt940.getFields().get(transactionCount + 1);
+                if (nextField.getName().equals("86")) {
+                    Field86 field86 = (Field86) nextField;
+                    correspondingTag86 = splitTag86IntoParts(field86.getNarrative());
                 }
                 transactions.put(field61, correspondingTag86);
-                transactionCount++;
             }
+            transactionCount++;
         }
         return transactions;
     }
