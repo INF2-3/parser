@@ -11,7 +11,7 @@ import java.util.*;
 public class JSONParser extends Parser {
     @SuppressWarnings("unchecked")
     @Override
-    public JSONObject parseToFormat(MultipartFile file) {
+    public String parseToFormat(MultipartFile file) {
         MT940 mt940 = parseMT940(file);
         if (mt940 == null) {
             return null;
@@ -32,7 +32,7 @@ public class JSONParser extends Parser {
         tags.put("generalInformationToAccountOwner", new JSONObject(getGeneral86TagAsMap(mt940)));
 
         formattedJSON.put("tags", tags);
-        return formattedJSON;
+        return formattedJSON.toString(1).replace("\\r", "");
     }
 
     public JSONArray getTransactions(MT940 mt940) {
