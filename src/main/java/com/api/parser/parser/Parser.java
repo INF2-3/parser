@@ -128,7 +128,7 @@ public abstract class Parser {
             put("dCMark", mt940.getField60F().getDCMark());
             put("date", mt940.getField60F().getDate());
             put("currency", mt940.getField60F().getCurrency());
-            put("amount", mt940.getField60F().getAmount());
+            put("amount", mt940.getField60F().getAmount().replace(",", "."));
             put("description", "This tag specifies, for the opening balance, whether it is a debit or credit balance,\n" +
                     "the date, the currency and the amount of the balance.");
         }};
@@ -140,7 +140,7 @@ public abstract class Parser {
             put("dCMark", mt940.getField62F().getDCMark());
             put("date", mt940.getField62F().getDate());
             put("currency", mt940.getField62F().getCurrency());
-            put("amount", mt940.getField62F().getAmount());
+            put("amount", mt940.getField62F().getAmount().replace(",", "."));
             put("description", "This tag specifies for the closing balance, whether it is a debit or credit balance, the\n" +
                     "date, the currency and the amount of the balance.");
         }};
@@ -152,7 +152,7 @@ public abstract class Parser {
             put("dCMark", mt940.getField64().getDCMark());
             put("date", mt940.getField64().getDate());
             put("currency", mt940.getField64().getCurrency());
-            put("amount", mt940.getField64().getAmount());
+            put("amount", mt940.getField64().getAmount().replace(",", "."));
             put("description", "This tag specifies for the closing available balance, whether it is a debit or credit\n" +
                     "balance, the date, the currency and the amount of the balance");
         }};
@@ -165,7 +165,7 @@ public abstract class Parser {
                 put("dCMark", field.getDCMark());
                 put("date", field.getDate());
                 put("currency", field.getCurrency());
-                put("amount", field.getAmount());
+                put("amount", field.getAmount().replace(",", "."));
             }};
             tag65.add(map);
         }
@@ -194,8 +194,8 @@ public abstract class Parser {
         return new LinkedHashMap<>() {{
             put("numberOfDebitEntries", splitGeneral86Tag[2]);
             put("numberOfCreditEntries", splitGeneral86Tag[3]);
-            put("debitEntriesTotalAmount", splitGeneral86Tag[4]);
-            put("creditEntriesTotalAmount", splitGeneral86Tag[5]);
+            put("debitEntriesTotalAmount", splitGeneral86Tag[4].replace(",", "."));
+            put("creditEntriesTotalAmount", splitGeneral86Tag[5].replace(",", "."));
         }};
     }
 }
