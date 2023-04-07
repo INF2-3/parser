@@ -41,6 +41,8 @@ public class JSONParser extends Parser {
 
         for (Map.Entry<Field61, LinkedHashMap<String, String>> entry : transactionsMap.entrySet()) {
             JSONObject obj61 = new JSONObject(entry.getKey().toJson());
+            String amount = obj61.get("amount").toString().replace(",", ".");
+            obj61.put("amount", amount);
             JSONObject obj86 = new JSONObject(entry.getValue());
             obj61.put("informationToAccountOwner", obj86);
             transactions.put(obj61);

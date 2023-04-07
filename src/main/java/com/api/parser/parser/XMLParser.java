@@ -137,7 +137,7 @@ public class XMLParser extends Parser {
             transaction.appendChild(createElementWithText("name", entry.getKey().getName()));
             transaction.appendChild(createElementWithText("transactionType", entry.getKey().getTransactionType()));
             transaction.appendChild(createElementWithText("identificationCode", entry.getKey().getIdentificationCode()));
-            transaction.appendChild(createElementWithText("amount", entry.getKey().getAmount()));
+            transaction.appendChild(createElementWithText("amount", entry.getKey().getAmount().replace(",", ".")));
             transaction.appendChild(createElementWithText("entryDate", entry.getKey().getEntryDate()));
             transaction.appendChild(createElementWithText("supplementaryDetails", entry.getKey().getSupplementaryDetails()));
             transaction.appendChild(createElementWithText("debitCreditMark", entry.getKey().getDebitCreditMark()));
